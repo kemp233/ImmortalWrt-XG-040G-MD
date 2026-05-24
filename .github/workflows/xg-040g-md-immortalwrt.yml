@@ -100,7 +100,9 @@ jobs:
         ./scripts/feeds update -a
         # Pin LuCI feed to known-good commit to prevent upstream drift
         # 26.129 (7511b79) - pinned to avoid firmware size bloat
-        git -C feeds/luci fetch --unshallow origin openwrt-25.12
+        # Re-clone with full history (shallow clone doesn't have old commits)
+        rm -rf feeds/luci
+        git clone --single-branch --branch openwrt-25.12 https://github.com/immortalwrt/luci.git feeds/luci
         git -C feeds/luci checkout 7511b79446474b196cc8782ba3635cf9e823eb5d
         ./scripts/feeds install -a
 
