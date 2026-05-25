@@ -87,6 +87,14 @@ jobs:
         echo "DEVICE_SUBTARGET=$DEVICE_SUBTARGET" >> $GITHUB_ENV
         echo "RELEASE_TAG=XG-040G-MD-$(date +"%Y%m%d")-${{ github.run_number }}" >> $GITHUB_ENV
 
+    - name: Copy Local Packages(复制本地包)
+      run: |
+        # 复制本地 openlist 包到 OpenWrt 源码树
+        if [ -d "$GITHUB_WORKSPACE/package/openlist" ]; then
+          cp -r "$GITHUB_WORKSPACE/package/openlist" "$OPENWRT_PATH/package/"
+          echo "已复制 openlist 包到 $OPENWRT_PATH/package/openlist"
+        fi
+
     - name: Cache Toolchain(缓存工具链)
       if: env.CACHE_TOOLCHAIN == 'true'
       uses: HiGarfield/cachewrtbuild@main
@@ -98,8 +106,6 @@ jobs:
     - name: Install Feeds(安装feeds)
       run: |
         cd $OPENWRT_PATH
-        # 添加 OpenList 第三方 feed（提供 openlist 二进制包）
-        echo 'src-git openlist https://github.com/sbwml/luci-app-openlist2.git' >> feeds.conf.default
         ./scripts/feeds update -a
         ./scripts/feeds install -a
 
