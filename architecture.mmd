@@ -1,0 +1,94 @@
+```mermaid
+flowchart TD
+    subgraph Hardware[Hardware Layer]
+        SoC[Airoha AN7581 SoC<br/>64-bit ARMv8 + NPU]
+        Memory[DDR4 RAM<br/>1GB+ Capacity]
+        Storage[NAND Flash<br/>32GB+ Storage]
+        Network[10G USXGMII<br/>WAN/LAN Ports]
+        WiFi[WiFi 6E<br/>2.4/5/6 GHz Bands]
+    end
+
+    subgraph Kernel[Kernel Layer]
+        BaseKern[Linux 6.12 Base<br/>OpenWrt Kernel]
+        AirohaDrv[Airoha Drivers<br/>PHY, I2C, USB3]
+        NPUKern[NPU Subsystem<br/>RISC-V Cores]
+        FrameEng[Frame Engine<br/>PSE/PPE Engines]
+        NetStack[Network Stack<br/>IPv4/IPv6, Firewall]
+    end
+
+    subgraph System[System Layer]
+        BusyBox[Busybox Tools<br/>Core Utilities]
+        Procd[procd<br/>Process Management]
+        Netifd[netifd<br/>Network Interface]
+        UCI[UCI Config<br/>Configuration System]
+        Apk[apk Package<br/>Package Manager]
+    end
+
+    subgraph Services[Services Layer]
+        Dropbear[Dropbear SSH<br/>Secure Access]
+        LuCI[LuCI Web UI<br/>Management Interface]
+        mDNS[mDNS Responder<br/>Local Discovery]
+        CurlWget[curl/wget-ssl<br/>Web Tools]
+    end
+
+    subgraph Management[Management Layer]
+        NPUApp[luci-app-airoha-npu<br/>NPU Management]
+        CPUMgr[CPU Frequency<br/>Scaling Controls]
+        OffloadMgr[VLAN/PPPoE<br/>Hardware Offload]
+        Monitor[Real-time<br/>Monitoring Dashboard]
+    end
+
+    subgraph User[User Interactions]
+        WebUI[Web Browser<br/>LuCI Interface]
+        SSH[SSH Client<br/>Terminal Access]
+        CLI[Command Line<br/>Shell Commands]
+    end
+
+    %% Hardware to Kernel connections
+    SoC -->|Control Signals| AirohaDrv
+    SoC -->|Data Flow| NPUKern
+    SoC -->|Memory Access| Memory
+    Network -->|Packet Processing| FrameEng
+    WiFi -->|Wireless Traffic| FrameEng
+
+    %% Kernel to System connections
+    BaseKern -->|Load Modules| AirohaDrv
+    BaseKern -->|Manage Resources| Memory
+    BaseKern -->|Interface with| NetStack
+    NetStack -->|Configure| Netifd
+    NetStack -->|Filter| UCI
+
+    %% System to Services connections
+    BusyBox -->|Provide Tools| Dropbear
+    BusyBox -->|Support| CurlWget
+    Procd -->|Manage| Netifd
+    UCI -->|Configure| Netifd
+    Apk -->|Install Packages| BusyBox
+
+    %% Services to Management connections
+    LuCI -->|Display Data| NPUApp
+    Dropbear -->|Remote Access| NPUApp
+    Netifd -->|Network Stats| Monitor
+    FrameEng -->|Offload Status| OffloadMgr
+
+    %% Management to User connections
+    NPUApp -->|Control Panel| WebUI
+    NPUApp -->|Configuration| SSH
+    CPUMgr -->|Frequency Settings| CLI
+    Monitor -->|Real-time Data| WebUI
+
+    %% Visual styling
+    classDef hardware fill:#e3f2fd,stroke:#1976d2,stroke-width:2px;
+    classDef kernel fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+    classDef system fill:#e8f5e8,stroke:#388e3c,stroke-width:2px;
+    classDef services fill:#fff3e0,stroke:#f57c00,stroke-width:2px;
+    classDef management fill:#fce4ec,stroke:#c2185b,stroke-width:2px;
+    classDef user fill:#e0f2f1,stroke:#00695c,stroke-width:2px;
+
+    class Hardware,HardwareLayer hardware;
+    class Kernel,KernelLayer kernel;
+    class System,SystemLayer system;
+    class Services,ServicesLayer services;
+    class Management,ManagementLayer management;
+    class User,UserInteractions user;
+```
