@@ -86,10 +86,13 @@ echo "[1/2] 查找 OpenList..."
 
 OPENLIST_MAKEFILE=""
 for candidate in \
+    "$OPENWRT_ROOT/package/feeds/openlist/openlist/Makefile" \
+    "$OPENWRT_ROOT/feeds/openlist/openlist/Makefile" \
     "$OPENWRT_ROOT/package/feeds/packages/openlist/Makefile" \
     "$OPENWRT_ROOT/package/feeds/packages/alist/Makefile" \
     "$OPENWRT_ROOT/package/feeds/luci/luci-app-openlist/Makefile" \
     "$OPENWRT_ROOT/package/feeds/luci/luci-app-openlist2/Makefile" \
+    "$OPENWRT_ROOT/feeds/openlist/luci-app-openlist2/Makefile" \
     "$OPENWRT_ROOT/feeds/packages/net/openlist/Makefile" \
     "$OPENWRT_ROOT/feeds/packages/net/alist/Makefile" \
     "$OPENWRT_ROOT/feeds/luci/applications/luci-app-openlist/Makefile" \

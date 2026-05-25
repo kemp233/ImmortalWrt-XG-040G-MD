@@ -98,6 +98,8 @@ jobs:
     - name: Install Feeds(安装feeds)
       run: |
         cd $OPENWRT_PATH
+        # 添加 OpenList 第三方 feed（提供 openlist 二进制包）
+        echo 'src-git openlist https://github.com/sbwml/luci-app-openlist2.git' >> feeds.conf.default
         ./scripts/feeds update -a
         ./scripts/feeds install -a
 
