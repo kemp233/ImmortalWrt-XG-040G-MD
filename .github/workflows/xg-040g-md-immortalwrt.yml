@@ -98,14 +98,6 @@ jobs:
       run: |
         cd $OPENWRT_PATH
         ./scripts/feeds update -a
-        # Pin feeds to known-good commits to prevent upstream drift causing firmware bloat
-        # packages: 6082ba7 (May 11) - pinned to avoid dependency bloat (32MB vs 74MB)
-        # luci: 7511b79 (May 9) - pinned for consistent LuCI version
-        rm -rf feeds/packages feeds/luci
-        git clone --single-branch --branch openwrt-25.12 https://github.com/immortalwrt/packages.git feeds/packages
-        git -C feeds/packages checkout 6082ba79c5f6
-        git clone --single-branch --branch openwrt-25.12 https://github.com/immortalwrt/luci.git feeds/luci
-        git -C feeds/luci checkout 7511b79446474b196cc8782ba3635cf9e823eb5d
         ./scripts/feeds install -a
 
     - name: Load Custom Configuration(加载自定义配置)
