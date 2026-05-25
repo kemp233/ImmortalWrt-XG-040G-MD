@@ -5,7 +5,7 @@ PKG_VERSION:=beta
 PKG_RELEASE:=1
 
 # Download pre-built binary from GitHub releases
-PKG_SOURCE:=$(PKG_NAME)-linux-aarch64.tar.gz
+PKG_SOURCE:=$(PKG_NAME)-linux-arm64.tar.gz
 PKG_SOURCE_URL:=https://github.com/OpenListTeam/OpenList/releases/download/$(PKG_VERSION)/
 PKG_HASH:=skip
 
