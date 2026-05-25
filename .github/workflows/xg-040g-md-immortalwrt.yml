@@ -49,6 +49,7 @@ jobs:
         sudo bash -c 'bash <(curl -sL https://build-scripts.immortalwrt.org/init_build_environment.sh)'
         sudo -E apt -yqq install dos2unix
         sudo -E apt -yqq install libfuse-dev
+        sudo -E apt -yqq install upx
         sudo -E apt -yqq autoremove --purge
         sudo -E apt -yqq autoclean
         sudo -E apt -yqq clean
@@ -99,6 +100,11 @@ jobs:
         cd $OPENWRT_PATH
         ./scripts/feeds update -a
         ./scripts/feeds install -a
+
+    - name: UPX Patch Makefiles(方案C: 修改包Makefile注入UPX压缩)
+      run: |
+        cd $OPENWRT_PATH
+        bash $GITHUB_WORKSPACE/scripts/upx-compress.sh "$OPENWRT_PATH"
 
     - name: Load Custom Configuration(加载自定义配置)
       run: |
