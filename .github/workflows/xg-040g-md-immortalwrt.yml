@@ -101,7 +101,7 @@ jobs:
         ./scripts/feeds update -a
         ./scripts/feeds install -a
 
-    - name: UPX Patch Makefiles(方案C: 修改包Makefile注入UPX压缩)
+    - name: "UPX Patch Makefiles(方案C: 修改包Makefile注入UPX压缩)"
       run: |
         cd $OPENWRT_PATH
         bash $GITHUB_WORKSPACE/scripts/upx-compress.sh "$OPENWRT_PATH"
