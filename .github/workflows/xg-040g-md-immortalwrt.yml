@@ -101,14 +101,6 @@ jobs:
         ./scripts/feeds update -a
         ./scripts/feeds install -a
 
-    - name: Copy Local Packages(复制本地包)
-      run: |
-        # 复制本地 openlist 包到 OpenWrt 源码树（在 feeds install 之后，确保不被缓存覆盖）
-        if [ -d "$GITHUB_WORKSPACE/package/openlist" ]; then
-          cp -r "$GITHUB_WORKSPACE/package/openlist" "$OPENWRT_PATH/package/"
-          echo "已复制 openlist 包到 $OPENWRT_PATH/package/openlist"
-        fi
-
     - name: Load Custom Configuration(加载自定义配置)
       run: |
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE $OPENWRT_PATH/.config
