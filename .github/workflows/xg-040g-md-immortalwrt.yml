@@ -120,15 +120,18 @@ jobs:
         cd $OPENWRT_PATH
         make defconfig
         grep "CONFIG_PACKAGE_luci-app-airoha-npu" .config || echo "WARNING: option missing!"
-        # 验证关键包是否被启用
-        echo "=== 验证关键包配置 ==="
-        for pkg in luci-app-openclash luci-app-openlist openlist bash cups cups-filters dnsmasq-full; do
-          if grep -q "CONFIG_PACKAGE_$pkg=y" .config; then
-            echo "✅ $pkg 已启用"
-          else
-            echo "❌ $pkg 未启用"
-          fi
-        done
+        # 强制启用关键包（defconfig 可能因依赖问题禁用）
+        sed -i 's/# CONFIG_PACKAGE_luci-app-openclash is not set/CONFIG_PACKAGE_luci-app-openclash=y/' .config
+        sed -i 's/# CONFIG_PACKAGE_luci-app-openlist is not set/CONFIG_PACKAGE_luci-app-openlist=y/' .config
+        sed -i 's/# CONFIG_PACKAGE_openlist is not set/CONFIG_PACKAGE_openlist=y/' .config
+        sed -i 's/# CONFIG_PACKAGE_bash is not set/CONFIG_PACKAGE_bash=y/' .config
+        # 如果 sed 没有匹配到（行不存在），直接追加
+        grep -q 'CONFIG_PACKAGE_luci-app-openclash=y' .config || echo 'CONFIG_PACKAGE_luci-app-openclash=y' >> .config
+        grep -q 'CONFIG_PACKAGE_luci-app-openlist=y' .config || echo 'CONFIG_PACKAGE_luci-app-openlist=y' >> .config
+        grep -q 'CONFIG_PACKAGE_openlist=y' .config || echo 'CONFIG_PACKAGE_openlist=y' >> .config
+        grep -q 'CONFIG_PACKAGE_bash=y' .config || echo 'CONFIG_PACKAGE_bash=y' >> .config
+        echo "=== 关键包配置 ==="
+        grep -E 'CONFIG_PACKAGE_(luci-app-openclash|luci-app-openlist|openlist|bash|dnsmasq-full)=' .config
 
     - name: Download DL Package(下载DL软件包)
       run: |
