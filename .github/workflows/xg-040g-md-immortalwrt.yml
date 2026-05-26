@@ -109,29 +109,12 @@ jobs:
           echo "已复制 openlist 包到 $OPENWRT_PATH/package/openlist"
         fi
 
-    - name: "UPX Patch Makefiles(方案C: 修改包Makefile注入UPX压缩)"
-      run: |
-        cd $OPENWRT_PATH
-        bash $GITHUB_WORKSPACE/scripts/upx-compress.sh "$OPENWRT_PATH"
-
     - name: Load Custom Configuration(加载自定义配置)
       run: |
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE $OPENWRT_PATH/.config
         cd $OPENWRT_PATH
         make defconfig
         grep "CONFIG_PACKAGE_luci-app-airoha-npu" .config || echo "WARNING: option missing!"
-        # 强制启用关键包（defconfig 可能因依赖问题禁用）
-        sed -i 's/# CONFIG_PACKAGE_luci-app-openclash is not set/CONFIG_PACKAGE_luci-app-openclash=y/' .config
-        sed -i 's/# CONFIG_PACKAGE_luci-app-openlist is not set/CONFIG_PACKAGE_luci-app-openlist=y/' .config
-        sed -i 's/# CONFIG_PACKAGE_openlist is not set/CONFIG_PACKAGE_openlist=y/' .config
-        sed -i 's/# CONFIG_PACKAGE_bash is not set/CONFIG_PACKAGE_bash=y/' .config
-        # 如果 sed 没有匹配到（行不存在），直接追加
-        grep -q 'CONFIG_PACKAGE_luci-app-openclash=y' .config || echo 'CONFIG_PACKAGE_luci-app-openclash=y' >> .config
-        grep -q 'CONFIG_PACKAGE_luci-app-openlist=y' .config || echo 'CONFIG_PACKAGE_luci-app-openlist=y' >> .config
-        grep -q 'CONFIG_PACKAGE_openlist=y' .config || echo 'CONFIG_PACKAGE_openlist=y' >> .config
-        grep -q 'CONFIG_PACKAGE_bash=y' .config || echo 'CONFIG_PACKAGE_bash=y' >> .config
-        echo "=== 关键包配置 ==="
-        grep -E 'CONFIG_PACKAGE_(luci-app-openclash|luci-app-openlist|openlist|bash|dnsmasq-full)=' .config
 
     - name: Download DL Package(下载DL软件包)
       run: |

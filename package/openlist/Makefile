@@ -26,14 +26,13 @@ define Package/openlist/description
 endef
 
 define Build/Compile
-	# Pre-built binary, nothing to compile
+	# Pre-built binary, strip debug symbols
+	$(STRIP) $(PKG_BUILD_DIR)/openlist
 endef
 
 define Package/openlist/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/openlist $(1)/usr/bin/openlist
-	# UPX compress to reduce firmware size (144MB -> ~10MB)
-	upx --best --lzma $(1)/usr/bin/openlist 2>/dev/null || echo "UPX compression skipped/failed"
+	$(CP) $(PKG_BUILD_DIR)/openlist $(1)/usr/bin/openlist
 endef
 
 $(eval $(call BuildPackage,openlist))
