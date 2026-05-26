@@ -87,14 +87,6 @@ jobs:
         echo "DEVICE_SUBTARGET=$DEVICE_SUBTARGET" >> $GITHUB_ENV
         echo "RELEASE_TAG=XG-040G-MD-$(date +"%Y%m%d")-${{ github.run_number }}" >> $GITHUB_ENV
 
-    - name: Copy Local Packages(复制本地包)
-      run: |
-        # 复制本地 openlist 包到 OpenWrt 源码树
-        if [ -d "$GITHUB_WORKSPACE/package/openlist" ]; then
-          cp -r "$GITHUB_WORKSPACE/package/openlist" "$OPENWRT_PATH/package/"
-          echo "已复制 openlist 包到 $OPENWRT_PATH/package/openlist"
-        fi
-
     - name: Cache Toolchain(缓存工具链)
       if: env.CACHE_TOOLCHAIN == 'true'
       uses: HiGarfield/cachewrtbuild@main
@@ -108,6 +100,14 @@ jobs:
         cd $OPENWRT_PATH
         ./scripts/feeds update -a
         ./scripts/feeds install -a
+
+    - name: Copy Local Packages(复制本地包)
+      run: |
+        # 复制本地 openlist 包到 OpenWrt 源码树（在 feeds install 之后，确保不被缓存覆盖）
+        if [ -d "$GITHUB_WORKSPACE/package/openlist" ]; then
+          cp -r "$GITHUB_WORKSPACE/package/openlist" "$OPENWRT_PATH/package/"
+          echo "已复制 openlist 包到 $OPENWRT_PATH/package/openlist"
+        fi
 
     - name: "UPX Patch Makefiles(方案C: 修改包Makefile注入UPX压缩)"
       run: |
