@@ -120,6 +120,15 @@ jobs:
         cd $OPENWRT_PATH
         make defconfig
         grep "CONFIG_PACKAGE_luci-app-airoha-npu" .config || echo "WARNING: option missing!"
+        # 验证关键包是否被启用
+        echo "=== 验证关键包配置 ==="
+        for pkg in luci-app-openclash luci-app-openlist openlist bash cups cups-filters dnsmasq-full; do
+          if grep -q "CONFIG_PACKAGE_$pkg=y" .config; then
+            echo "✅ $pkg 已启用"
+          else
+            echo "❌ $pkg 未启用"
+          fi
+        done
 
     - name: Download DL Package(下载DL软件包)
       run: |
